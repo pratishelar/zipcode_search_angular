@@ -1,0 +1,95 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+</head>
+<link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css">
+<link rel="stylesheet" href="styles.css">
+<script src="https://ajax.googleapis.com/ajax/libs/angularjs/1.4.8/angular.min.js"></script>
+<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.2.0/jquery.min.js"></script>
+<script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js"></script>
+<script src="app.js"></script>
+
+<body ng-app="myApp" ng-controller="movieCtrl">
+    <nav class="navbar navbar-inverse">
+        <div class="container-fluid">
+            <div class="navbar-header">
+                <p class="navbar-brand">News Check</p>
+            </div>
+            <ul class="nav navbar-nav">
+                <li><a href="index.html">Zip Search</a></li>
+                <li><a href="zipcode.html" >Radius zip</a></li>
+            </ul>
+        </div>
+    </nav>
+
+    <div class="jumbotron text-center jumbotron-fluid">
+        <h2>Enter Zip Code to check your City in Canada and USA</h2>
+        <div class="container">
+            <form>
+                <div class="form-group">
+                    <div class="col-md-4 col-md-offset-4">
+
+                        <input type="text" class="form-control" placeholder="Enter Zip Code" ng-model="search">
+
+                        <button type="button" class="btn btn-primary form-control" ng-click="submitSearch()">Search</button>
+
+                    </div>
+                </div>
+
+            </form>
+        </div>
+    </div>
+
+    <div class="container">
+        <div class="col-md-3 col-md-offset-5">
+            <strong><h3>{{ searchHeader }}</h3> </strong>
+            <strong><h4>{{ city }}</h4></strong>
+            <strong><h4>{{ state }}</h4></strong>
+            <strong><h4>{{ country1 }}</h4></strong>
+            <strong><h4>{{ areacode }}</h4></strong>
+            <strong><h4>{{ longitude }}</h4></strong>
+            <strong><h4>{{ latitude }}</h4></strong>
+            <strong><h4>{{ timezone }}</h4></strong>
+        </div>
+    </div>
+
+    <script>
+        var app = angular.module('myApp', []);
+
+        app.controller('movieCtrl', function($scope, $http) {
+
+            $scope.submitSearch = function() {
+
+
+                $scope.urlsearch = "  https://www.zipwise.com/webservices/zipinfo.php?key=9p5zy3pfnunufbte&zip=" + $scope.search + "&format=json";
+                $http.get($scope.urlsearch).then(function(response) {
+                    $scope.myData = response.data;
+
+                    $scope.searchHeader = " Search Result: ";
+                    $scope.city = "city: " + $scope.myData.results.cities[0].city;
+                    $scope.state = "state: " + $scope.myData.results.state;
+                    $scope.country = $scope.myData.results.country;
+                    if ($scope.country == "C") {
+                        $scope.country1 = "country: Canada";
+                    } else if ($scope.country == "U") {
+                        $scope.country1 = "country: United states of america";
+                    } else {
+                        $scope.country1 = "country: Not available";
+                    }
+                    $scope.country = "country: " + $scope.myData.results.country;
+                    $scope.areacode = "areacode: " + $scope.myData.results.area_code;
+                    $scope.longitude = "longitude: " + $scope.myData.results.longitude;
+                    $scope.latitude = "latitude: " + $scope.myData.results.latitude;
+                    $scope.timezone = "time zone: " + $scope.myData.results.time_zone;
+                });
+
+            };
+        });
+
+    </script>
+
+</body>
+
+</html>

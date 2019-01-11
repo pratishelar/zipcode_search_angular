@@ -1,0 +1,100 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+</head>
+<link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css">
+<script src="https://ajax.googleapis.com/ajax/libs/angularjs/1.4.8/angular.min.js"></script>
+<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.2.0/jquery.min.js"></script>
+<script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js"></script>
+<script src="app.js"></script>
+
+<body ng-app="myApp" ng-controller="movieCtrl">
+    <nav class="navbar navbar-inverse">
+        <div class="container-fluid">
+            <div class="navbar-header">
+                <p class="navbar-brand">News Check</p>
+            </div>
+            <ul class="nav navbar-nav">
+                <li><a href="index.html">Zip Search</a></li>
+                <li><a href="zipcode.html">Radius zip</a></li>
+            </ul>
+        </div>
+    </nav>
+
+    <div class="jumbotron text-center jumbotron-fluid">
+        <h2>Enter Zip Code to check your City in Canada and USA</h2>
+        <div class="container">
+            <form>
+                <div class="form-group">
+                    <div class="col-md-4 col-md-offset-4">
+
+                        <input type="text" class="form-control" placeholder="Enter Zip Code" ng-model="search">
+                        <input type="text" class="form-control" placeholder="Enter Radius" ng-model="radius">
+
+                        <button type="button" class="btn btn-primary form-control" ng-click="submitSearch()">Search</button>
+
+                    </div>
+                </div>
+
+            </form>
+        </div>
+    </div>
+
+    <div class="col-lg-12">
+        <table class="table table-striped table-hover">
+            <thead>
+                <tr>
+                    <th>{{ zip }}</th>
+                    <th>{{ city }}</th>
+                    <th>{{ county }}</th>
+                    <th>{{ state }}</th>
+                    <th>{{ distance }}</th>
+
+                </tr>
+            </thead>
+            <tbody>
+                <tr ng-repeat="data in myData">
+                    <td>{{data.zip}}</td>
+                    <td>{{data.city}}</td>
+                    <td>{{data.county}}</td>
+                    <td>{{data.state}}</td>
+                    <td>{{data.distance}}</td>
+                </tr>
+            </tbody>
+        </table>
+    </div>
+
+    <script>
+        var app = angular.module('myApp', []);
+
+        app.controller('movieCtrl', function($scope, $http) {
+
+            $scope.submitSearch = function() {
+
+                $scope.myData = [];
+
+
+                $scope.urlsearch = "https://www.zipwise.com/webservices/radius.php?key=9p5zy3pfnunufbte&zip=" + $scope.search + "&radius=" + $scope.radius + "&format=json";
+                $scope.zip = "zip";
+                $scope.city = "city";
+                $scope.county = "county";
+                $scope.state = "state";
+                $scope.distance = "distance";
+
+
+                $http.get($scope.urlsearch).then(function(response) {
+                    $scope.myData = response.data.results;
+                    console.log($scope.myData);
+
+                });
+
+            };
+        });
+
+    </script>
+
+</body>
+
+</html>
